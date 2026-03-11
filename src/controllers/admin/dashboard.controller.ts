@@ -20,9 +20,14 @@ const getOrderDashboardPage = async (req: Request, res: Response) => {
   return res.render("admin/order/show");
 };
 
+const getProductPage = async (req: Request, res: Response) => {
+  return res.render("client/product/show");
+};
+
 export {
   getDashboardPage,
   getUserDashboardPage,
   getProductDashboardPage,
   getOrderDashboardPage,
+  getProductPage,
 };
