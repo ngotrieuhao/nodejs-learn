@@ -22,6 +22,11 @@ import {
   postAdminCreateProductPage,
   postDeleteProduct,
 } from "controllers/admin/product.controller";
+import {
+  getLoginPage,
+  getRegisterPage,
+  postRegisterPage,
+} from "controllers/admin/auth.controller";
 
 const router = express.Router();
 
@@ -62,6 +67,10 @@ const webRoutes = (app: Express) => {
     fileUploadMiddleware("avatar"),
     postUpdateUser,
   );
+
+  router.get("/login", getLoginPage);
+  router.get("/register", getRegisterPage);
+  router.post("/register", postRegisterPage);
 
   app.use("/", router);
 };

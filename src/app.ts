@@ -19,6 +19,12 @@ webRoutes(app);
 
 // seeding data
 initDatabase();
+
+//404 Page
+app.use((req, res) => {
+  res.send("404 Not Found");
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });

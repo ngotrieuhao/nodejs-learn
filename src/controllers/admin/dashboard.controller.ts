@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getProductList } from "services/admin/product.service";
+import { getProductById, getProductList } from "services/admin/product.service";
 import { getAllUsers } from "services/user.service";
 
 const getDashboardPage = async (req: Request, res: Response) => {
@@ -23,7 +23,9 @@ const getOrderDashboardPage = async (req: Request, res: Response) => {
 };
 
 const getProductPage = async (req: Request, res: Response) => {
-  return res.render("client/product/show");
+  const { id } = req.params;
+  const product = await getProductById(id.toString());
+  return res.render("client/product/show", { product });
 };
 
 export {

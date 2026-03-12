@@ -6,7 +6,6 @@ import {
   updateProductById,
 } from "services/admin/product.service";
 import { ProductSchema, TProductSchema } from "src/validation/product.schema";
-import { id } from "zod/v4/locales";
 
 const getAdminCreateProductPage = async (req: Request, res: Response) => {
   const oldData = {
