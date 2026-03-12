@@ -27,6 +27,7 @@ import {
   getRegisterPage,
   postRegisterPage,
 } from "controllers/admin/auth.controller";
+import passport from "passport";
 
 const router = express.Router();
 
@@ -69,6 +70,14 @@ const webRoutes = (app: Express) => {
   );
 
   router.get("/login", getLoginPage);
+  router.post(
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/login",
+      failureMessage: true,
+    }),
+  );
   router.get("/register", getRegisterPage);
   router.post("/register", postRegisterPage);
 
