@@ -5,6 +5,11 @@ import {
   handleDeleteProduct,
   updateProductById,
 } from "services/admin/product.service";
+import {
+  addProductToCart,
+  deleteProductFromCart,
+  getProductInCart,
+} from "services/client/item.services";
 import { ProductSchema, TProductSchema } from "src/validation/product.schema";
 
 const getAdminCreateProductPage = async (req: Request, res: Response) => {
@@ -145,11 +150,67 @@ const postDeleteProduct = async (req: Request, res: Response) => {
   return res.redirect("/admin/product");
 };
 
+const postAddProductToCart = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = req.user as Express.User;
+  if (user) {
+    await addProductToCart(1, +id, user);
+    return res.redirect("/cart");
+  } else {
+    return res.redirect("/login");
+  }
+};
+
+const postDeleteProductFromCart = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = req.user as Express.User;
+  if (user) {
+    await deleteProductFromCart(+id, user.id, user.sumCart);
+  } else {
+    return res.redirect("/login");
+  }
+  return res.redirect("/cart");
+};
+
+const getCartPage = async (req: Request, res: Response) => {
+  const user = req.user as Express.User;
+  if (user) {
+    const cartDetails = await getProductInCart(+user.id);
+
+    const totalPrice =
+      cartDetails
+        ?.map((item) => +item.price * +item.quantity)
+        .reduce((acc, curr) => acc + curr, 0) || 0;
+    return res.render("client/product/cart", { cartDetails, totalPrice });
+  } else {
+    return res.redirect("/login");
+  }
+};
+
+const getCheckoutPage = async (req: Request, res: Response) => {
+  const user = req.user as Express.User;
+  if (user) {
+    const cartDetails = await getProductInCart(+user.id);
+
+    const totalPrice =
+      cartDetails
+        ?.map((item) => +item.price * +item.quantity)
+        .reduce((acc, curr) => acc + curr, 0) || 0;
+    return res.render("client/product/checkout", { cartDetails, totalPrice });
+  } else {
+    return res.redirect("/login");
+  }
+};
+
 export {
   getAdminCreateProductPage,
   postAdminCreateProductPage,
   getUpdateProductpage,
   getViewDetailProduct,
   postDeleteProduct,
+  postAddProductToCart,
   postUpdateProductpage,
+  getCartPage,
+  postDeleteProductFromCart,
+  getCheckoutPage,
 };

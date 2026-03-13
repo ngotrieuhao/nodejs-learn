@@ -45,6 +45,7 @@ const getProductById = async (id: string) => {
   });
   return product;
 };
+
 const updateProductById = async (
   id: number,
   name: string,

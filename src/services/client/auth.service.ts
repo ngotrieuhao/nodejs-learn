@@ -68,4 +68,34 @@ const handleLogin = async (
   return callback(null, user);
 };
 
-export { isEmailExist, registerNewUser, handleLogin };
+const getUserById = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: Number(id),
+    },
+    include: {
+      role: true,
+    },
+    omit: {
+      password: true,
+    },
+  });
+  return user;
+};
+
+const getUserSumCart = async (id: string) => {
+  const user = await prisma.cart.findUnique({
+    where: {
+      userId: Number(id),
+    },
+  });
+  return user?.sum ?? 0;
+};
+
+export {
+  isEmailExist,
+  registerNewUser,
+  handleLogin,
+  getUserById,
+  getUserSumCart,
+};

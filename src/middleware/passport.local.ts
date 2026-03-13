@@ -1,6 +1,7 @@
 import { prisma } from "config/client";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { getUserById, getUserSumCart } from "services/client/auth.service";
 import { comparePassword } from "services/user.service";
 
 const configPassportLocal = () => {
@@ -34,21 +35,20 @@ const configPassportLocal = () => {
           });
         }
 
-        return callback(null, user);
+        return callback(null, user as any);
       },
     ),
   );
 
-  passport.serializeUser(function (user: any, cb) {
-    process.nextTick(function () {
-      cb(null, { id: user.id, username: user.username });
-    });
+  passport.serializeUser(function (user: any, callback) {
+    callback(null, { id: user.id, username: user.username });
   });
 
-  passport.deserializeUser(function (user, cb) {
-    process.nextTick(function () {
-      return cb(null, user);
-    });
+  passport.deserializeUser(async function (user: any, callback) {
+    const { id, username } = user as any;
+    const userInDB: any = await getUserById(id);
+    const sumCart = await getUserSumCart(id);
+    return callback(null, { ...(userInDB as any), sumCart });
   });
 };
 

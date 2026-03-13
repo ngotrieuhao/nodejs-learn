@@ -52,14 +52,6 @@ const handleDeleteUser = async (id: string) => {
   return deleteUser;
 };
 
-const getUserById = async (id: string) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: Number(id),
-    },
-  });
-  return user;
-};
 const updateUserById = async (
   id: string,
   fullName: string,
@@ -87,7 +79,6 @@ export {
   handleCreateUser,
   getAllUsers,
   handleDeleteUser,
-  getUserById,
   updateUserById,
   getAllRoles,
   hashPassword,

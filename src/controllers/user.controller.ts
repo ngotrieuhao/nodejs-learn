@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
+import { getUserById } from "services/client/auth.service";
 import { getProducts } from "services/client/item.services";
 import {
   getAllRoles,
   getAllUsers,
-  getUserById,
   handleCreateUser,
   handleDeleteUser,
   updateUserById,

@@ -52,4 +52,28 @@ const getLoginPage = async (req: Request, res: Response) => {
   return res.render("client/auth/login", { messages });
 };
 
-export { getRegisterPage, postRegisterPage, getLoginPage };
+const getSuccessLoginPage = async (req: Request, res: Response) => {
+  const user = req.user as any;
+  if (user?.role?.name === "ADMIN") {
+    return res.redirect("/admin");
+  } else {
+    return res.redirect("/");
+  }
+};
+
+const postLogoutPage = async (req: Request, res: Response, next: Function) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
+
+export {
+  getRegisterPage,
+  postRegisterPage,
+  getLoginPage,
+  getSuccessLoginPage,
+  postLogoutPage,
+};

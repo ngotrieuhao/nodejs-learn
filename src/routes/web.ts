@@ -17,17 +17,24 @@ import {
 import fileUploadMiddleware from "src/middleware/multer";
 import {
   getAdminCreateProductPage,
+  getCartPage,
+  getCheckoutPage,
   getUpdateProductpage,
   getViewDetailProduct,
+  postAddProductToCart,
   postAdminCreateProductPage,
   postDeleteProduct,
+  postDeleteProductFromCart,
 } from "controllers/admin/product.controller";
 import {
   getLoginPage,
   getRegisterPage,
+  getSuccessLoginPage,
+  postLogoutPage,
   postRegisterPage,
 } from "controllers/admin/auth.controller";
 import passport from "passport";
+import { isAdmin, isLogin } from "src/middleware/auth";
 
 const router = express.Router();
 
@@ -35,8 +42,11 @@ const webRoutes = (app: Express) => {
   router.get("/", getHomePage);
   router.get("/product/:id", getProductPage);
 
-  router.get("/admin", getDashboardPage);
+  router.get("/admin", isAdmin, getDashboardPage);
   router.get("/admin/user", getUserDashboardPage);
+
+  router.post("/add-product-to-cart/:id", postAddProductToCart);
+  router.post("/delete-product-from-cart/:id", postDeleteProductFromCart);
 
   router.get("/admin/product", getProductDashboardPage);
   router.get("/admin/create-product", getAdminCreateProductPage);
@@ -69,19 +79,23 @@ const webRoutes = (app: Express) => {
     postUpdateUser,
   );
 
+  router.get("/success-login", getSuccessLoginPage);
   router.get("/login", getLoginPage);
   router.post(
     "/login",
     passport.authenticate("local", {
-      successRedirect: "/",
+      successRedirect: "/success-login",
       failureRedirect: "/login",
       failureMessage: true,
     }),
   );
   router.get("/register", getRegisterPage);
   router.post("/register", postRegisterPage);
+  router.post("/logout", postLogoutPage);
+  router.get("/cart", getCartPage);
+  router.get("/checkout", getCheckoutPage);
 
-  app.use("/", router);
+  app.use("/", isAdmin, router);
 };
 
 export default webRoutes;
