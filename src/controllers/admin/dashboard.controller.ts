@@ -5,7 +5,12 @@ import {
   getOrderDetailAdmin,
 } from "services/admin/order.service";
 import { getProductById, getProductList } from "services/admin/product.service";
-import { getAllUsers } from "services/user.service";
+import {
+  countTotalOrdersPage,
+  countTotalProductsPage,
+  countTotalUsersPage,
+  getAllUsers,
+} from "services/user.service";
 
 const getDashboardPage = async (req: Request, res: Response) => {
   const info = await getDashboardInfo();
@@ -13,19 +18,33 @@ const getDashboardPage = async (req: Request, res: Response) => {
 };
 
 const getUserDashboardPage = async (req: Request, res: Response) => {
-  const users = await getAllUsers();
+  const { page } = req.query;
+  let currentPage = page ? +page : 1;
+  if (currentPage < 1) currentPage = 1;
+
+  const totalPages = await countTotalUsersPage();
+  const users = await getAllUsers(currentPage);
+
   return res.render("admin/user/show", {
     users,
+    totalPages,
+    page: currentPage,
   });
 };
 
 const getProductDashboardPage = async (req: Request, res: Response) => {
-  const products = await getProductList();
-  return res.render("admin/product/show", { products });
-};
+  const { page } = req.query;
+  let currentPage = page ? +page : 1;
+  if (currentPage < 1) currentPage = 1;
 
-const getOrderDashboardPage = async (req: Request, res: Response) => {
-  return res.render("admin/order/show");
+  const totalPages = await countTotalProductsPage();
+
+  const products = await getProductList(currentPage);
+  return res.render("admin/product/show", {
+    products,
+    totalPages,
+    page: currentPage,
+  });
 };
 
 const getProductPage = async (req: Request, res: Response) => {
@@ -35,9 +54,17 @@ const getProductPage = async (req: Request, res: Response) => {
 };
 
 const getAdminOrderPage = async (req: Request, res: Response) => {
-  const orders = await getOrderAdmin();
+  const { page } = req.query;
+  let currentPage = page ? +page : 1;
+  if (currentPage < 1) currentPage = 1;
+  const totalPages = await countTotalOrdersPage();
+
+  const orders = await getOrderAdmin(currentPage);
+  console.log("🚀 ~ getAdminOrderPage ~ orders:", orders);
   return res.render("admin/order/show.ejs", {
     orders,
+    totalPages,
+    page: currentPage,
   });
 };
 
@@ -56,7 +83,6 @@ export {
   getDashboardPage,
   getUserDashboardPage,
   getProductDashboardPage,
-  getOrderDashboardPage,
   getProductPage,
   getAdminOrderPage,
   getAdminOrderDetailPage,

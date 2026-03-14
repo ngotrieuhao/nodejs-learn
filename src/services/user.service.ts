@@ -1,5 +1,5 @@
 import { prisma } from "config/client";
-import { ACCOUNT_TYPE } from "config/constant";
+import { ACCOUNT_TYPE, TOTAL_ITEM_PER_PAGE } from "config/constant";
 import bcrypt from "bcrypt";
 
 const saltRounds = 10;
@@ -33,9 +33,40 @@ const handleCreateUser = async (
   });
 };
 
-const getAllUsers = async () => {
-  const users = await prisma.user.findMany();
+const getAllUsers = async (page: number) => {
+  const pageSize = TOTAL_ITEM_PER_PAGE;
+  const skip = (page - 1) * pageSize;
+  const users = await prisma.user.findMany({
+    skip,
+    take: 3,
+  });
   return users;
+};
+
+const countTotalUsersPage = async () => {
+  const pageSize = TOTAL_ITEM_PER_PAGE;
+  const totalItems = await prisma.user.count();
+  const totalPages = Math.ceil(totalItems / pageSize);
+  return totalPages;
+};
+
+const countTotalProductsPage = async () => {
+  const pageSize = TOTAL_ITEM_PER_PAGE;
+  const totalItems = await prisma.product.count();
+  const totalPages = Math.ceil(totalItems / pageSize);
+  return totalPages;
+};
+const countTotalProductClientPages = async (pageSize: number) => {
+  const totalItems = await prisma.product.count();
+  const totalPages = Math.ceil(totalItems / pageSize);
+  return totalPages;
+};
+
+const countTotalOrdersPage = async () => {
+  const pageSize = TOTAL_ITEM_PER_PAGE;
+  const totalItems = await prisma.order.count();
+  const totalPages = Math.ceil(totalItems / pageSize);
+  return totalPages;
 };
 
 const getAllRoles = async () => {
@@ -83,4 +114,8 @@ export {
   getAllRoles,
   hashPassword,
   comparePassword,
+  countTotalUsersPage,
+  countTotalProductsPage,
+  countTotalOrdersPage,
+  countTotalProductClientPages,
 };

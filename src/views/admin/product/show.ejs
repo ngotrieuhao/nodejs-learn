@@ -90,6 +90,29 @@
                     <% }) %>
               </tbody>
             </table>
+             <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item">
+                    <a class="<%= page == 1 ? 'disabled page-link' : 'page-link' %>" 
+                      href="/admin/product?page=<%= Math.max(1, page - 1) %>" 
+                      aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <% for(var i=0; i < totalPages; i++) { %>
+                    <li class="page-item <%= page === (i + 1) ? 'active' : '' %>">
+                      <a class="<%= page == i+1 ? 'active page-link' : 'page-link' %>" href="/admin/product?page=<%= i + 1 %>"><%= i + 1 %></a>
+                    </li>
+                  <% } %>
+                  <li class="page-item">
+                    <a class="<%= page == totalPages ? 'disabled page-link' : 'page-link' %>" 
+                      href="/admin/product?page=<%= Math.min(totalPages, page + 1) %>" 
+                      aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
           </div>
         </main>
         <%- include('../layout/footer.ejs') -%>

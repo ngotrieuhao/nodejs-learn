@@ -3,3 +3,5 @@ export const ACCOUNT_TYPE = {
   GOOGLE: "",
   GITHUB: "",
 };
+
+export const TOTAL_ITEM_PER_PAGE = 5;

@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import {
   getCreateUserPage,
   getHomePage,
+  getProductFilterPage,
   getViewDetailUser,
   postCreateUserPage,
   postDeleteUserPage,
@@ -11,7 +12,6 @@ import {
   getAdminOrderDetailPage,
   getAdminOrderPage,
   getDashboardPage,
-  getOrderDashboardPage,
   getProductDashboardPage,
   getProductPage,
   getUserDashboardPage,
@@ -47,8 +47,9 @@ const router = express.Router();
 
 const webRoutes = (app: Express) => {
   router.get("/", getHomePage);
-  router.get("/product/:id", getProductPage);
+  router.get("/products", getProductFilterPage);
 
+  router.get("/product/:id", getProductPage);
   router.get("/admin", isAdmin, getDashboardPage);
   router.get("/admin/user", getUserDashboardPage);
 
@@ -71,7 +72,6 @@ const webRoutes = (app: Express) => {
   router.get("/admin/view-product/:id", getViewDetailProduct);
   router.post("/admin/delete-product/:id", postDeleteProduct);
 
-  router.get("/admin/order", getOrderDashboardPage);
   router.get("/admin/create", getCreateUserPage);
   router.post(
     "/admin/handle-create-user",
