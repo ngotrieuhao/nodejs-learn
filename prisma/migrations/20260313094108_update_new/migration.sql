@@ -10,5 +10,5 @@
 -- AlterTable
 ALTER TABLE `products` DROP COLUMN `detailDesc`,
     DROP COLUMN `shortDesc`,
-    ADD COLUMN `description` VARCHAR(255) NOT NULL,
+    ADD COLUMN `description` MEDIUMTEXT NOT NULL,
     ADD COLUMN `shortDescription` VARCHAR(255) NOT NULL;

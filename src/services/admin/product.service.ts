@@ -10,7 +10,7 @@ const createProduct = async (
   target: string,
   image: string | null,
 ) => {
-  await prisma.product.create({
+  const product = await prisma.product.create({
     data: {
       name,
       price,

@@ -30,18 +30,20 @@ model User {
   accountType String  @db.VarChar(50)
   avatar      String? @db.VarChar(255)
 
-  role   Role   @relation(fields: [roleId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
   roleId Int
-  cart   Cart?
-  order  Order?
+
+  cart Cart?
+
+  orders Order[]
 
   @@map("users")
 }
 
 model Role {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique @db.VarChar(100)
-  description String? @db.VarChar(255)
+  id          Int    @id @default(autoincrement())
+  name        String @unique @db.VarChar(100)
+  description String @db.VarChar(255)
 
   users User[]
 
@@ -49,18 +51,19 @@ model Role {
 }
 
 model Product {
-  id               Int           @id @default(autoincrement())
-  name             String        @db.VarChar(255)
+  id               Int     @id @default(autoincrement())
+  name             String  @db.VarChar(255)
   price            Int
-  description      String        @db.MediumText
-  shortDescription String        @db.VarChar(255)
+  description      String  @db.MediumText
+  shortDescription String  @db.VarChar(255)
   quantity         Int
-  sold             Int?          @default(0)
-  factory          String        @db.VarChar(255)
-  target           String        @db.VarChar(255)
-  image            String?       @db.VarChar(255)
-  cartDetails      CartDetail[]
-  orderDetails     OrderDetail[]
+  sold             Int?    @default(0)
+  factory          String  @db.VarChar(255)
+  target           String  @db.VarChar(255)
+  image            String? @db.VarChar(255)
+
+  cartDetails  CartDetail[]
+  orderDetails OrderDetail[]
 
   @@map("products")
 }
@@ -100,11 +103,11 @@ model Order {
   status          String @default("PENDING") //PENDING, CANCELED, COMPLETE
 
   paymentMethod String //COD, BANKING...
-  paymentStatus String //PAYMENT_UNPAID, PAYMENT_SUCCED, PAYMENT_FAILED
+  paymentStatus String //PAYMENT_UNPAID, PAYMENT_SUCCEED, PAYMENT_FAILED
   paymentRef    String?
 
   user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique
+  userId Int
 
   orderDetails OrderDetail[]
 

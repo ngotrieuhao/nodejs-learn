@@ -8,6 +8,8 @@ import {
   postUpdateUser,
 } from "../controllers/user.controller";
 import {
+  getAdminOrderDetailPage,
+  getAdminOrderPage,
   getDashboardPage,
   getOrderDashboardPage,
   getProductDashboardPage,
@@ -19,12 +21,17 @@ import {
   getAdminCreateProductPage,
   getCartPage,
   getCheckoutPage,
+  getOrderHistoryPage,
+  getThanksPage,
   getUpdateProductpage,
   getViewDetailProduct,
   postAddProductToCart,
+  postAddToCartFromDetailPage,
   postAdminCreateProductPage,
   postDeleteProduct,
   postDeleteProductFromCart,
+  postHandleCartToCheckOut,
+  postPlaceOrder,
 } from "controllers/admin/product.controller";
 import {
   getLoginPage,
@@ -78,6 +85,8 @@ const webRoutes = (app: Express) => {
     fileUploadMiddleware("avatar"),
     postUpdateUser,
   );
+  router.get("/admin/order", getAdminOrderPage);
+  router.get("/admin/order/:id", getAdminOrderDetailPage);
 
   router.get("/success-login", getSuccessLoginPage);
   router.get("/login", getLoginPage);
@@ -94,6 +103,11 @@ const webRoutes = (app: Express) => {
   router.post("/logout", postLogoutPage);
   router.get("/cart", getCartPage);
   router.get("/checkout", getCheckoutPage);
+  router.post("/handle-cart-to-checkout", postHandleCartToCheckOut);
+  router.post("/place-order", postPlaceOrder);
+  router.get("/thanks", getThanksPage);
+  router.get("/order-history", getOrderHistoryPage);
+  router.post("/add-to-cart-from-detail-page/:id", postAddToCartFromDetailPage);
 
   app.use("/", isAdmin, router);
 };

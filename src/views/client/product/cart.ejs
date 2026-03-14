@@ -80,7 +80,7 @@
               </tr>
             </thead>
             <tbody>
-              <% cartDetails.forEach((item) => { %>
+              <% cartDetails.forEach((item, index) => { %>
               <tr>
                 <th scope="row">
                   <div class="d-flex align-items-center">
@@ -110,8 +110,9 @@
                     <input
                       type="text"
                       class="form-control form-control-sm text-center border-0"
-                      data-cart-detail-id="<%=item.id%>"
-                      data-cart-detail-price="<%=item.price%>"
+                      data-cart-detail-id="<%=item.id %>"
+                      data-cart-detail-price="<%=item.price %>"
+                      data-cart-detail-index="<%=index %>"
                       value="<%= item.quantity %>"
                     />
                     <div class="input-group-btn">
@@ -180,15 +181,32 @@
                   <%= new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(totalPrice) %>
                 </p>
               </div>
-              <form method="post" action="/checkout">
 
-                <button
-                class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
-                type="submit"
-                >
-                Proceed Checkout
-              </button>
-            </form>
+                <form method="post" action="/handle-cart-to-checkout">
+                    <div style="display: block">
+                      <intput type="text" name="cartId" value="<%= cartId %>" />
+                        <% cartDetails.forEach( function (cartDetail, index) { %>
+                            <div class="mb-3">
+                                <div class="form-group">
+                                    <label>Id:</label>
+                                    <input class="form-control" type="text" value="<%=cartDetail.id %>"
+                                        name="cartDetails[<%= index %>][id]" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantity:</label>
+                                    <input class="form-control" type="text"
+                                        value="<%=cartDetail.quantity %>"
+                                        name="cartDetails[<%= index %>][quantity]"
+                                        id="cartDetails[<%= index %>]" />
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <button
+                        class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                        type="submit">Xác nhận thanh toán
+                    </button>
+                </form>
             </div>
           </div>
         </div>

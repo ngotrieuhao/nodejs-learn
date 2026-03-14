@@ -8,7 +8,10 @@ import {
 import {
   addProductToCart,
   deleteProductFromCart,
+  getOrderHistory,
   getProductInCart,
+  handlerPlaceOrder,
+  updateCartDetailBeforeCheckout,
 } from "services/client/item.services";
 import { ProductSchema, TProductSchema } from "src/validation/product.schema";
 
@@ -181,7 +184,13 @@ const getCartPage = async (req: Request, res: Response) => {
       cartDetails
         ?.map((item) => +item.price * +item.quantity)
         .reduce((acc, curr) => acc + curr, 0) || 0;
-    return res.render("client/product/cart", { cartDetails, totalPrice });
+
+    const cartId = cartDetails.length ? cartDetails[0].cartId : 0;
+    return res.render("client/product/cart", {
+      cartDetails,
+      totalPrice,
+      cartId,
+    });
   } else {
     return res.redirect("/login");
   }
@@ -202,6 +211,60 @@ const getCheckoutPage = async (req: Request, res: Response) => {
   }
 };
 
+const postHandleCartToCheckOut = async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) return res.redirect("/login");
+  const cartDetails = await getProductInCart(+user.id);
+  const cartId = cartDetails.length ? cartDetails[0].cartId : 0;
+  const currentCartDetail: { id: string; quantity: string }[] =
+    req.body?.cartDetails ?? [];
+
+  await updateCartDetailBeforeCheckout(currentCartDetail, cartId.toString());
+
+  return res.redirect("/checkout");
+};
+
+const postPlaceOrder = async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) return res.redirect("/login");
+  const { receiverName, receiverAddress, receiverPhone, totalPrice } = req.body;
+
+  const message = await handlerPlaceOrder(
+    user.id,
+    receiverName,
+    receiverAddress,
+    receiverPhone,
+    +totalPrice,
+  );
+  if (message) res.redirect("/checkout");
+  return res.redirect("/thanks");
+};
+
+const getThanksPage = async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) return res.redirect("/login");
+
+  return res.render("client/product/thanks");
+};
+
+const getOrderHistoryPage = async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) return res.redirect("/login");
+  const orders = await getOrderHistory(user.id);
+  return res.render("client/product/order.history.ejs", { orders });
+};
+
+const postAddToCartFromDetailPage = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+  const user = req.user;
+  if (!user) return res.redirect("/login");
+
+  await addProductToCart(+quantity, +id, user);
+
+  return res.redirect(`/product/${id}`);
+};
+
 export {
   getAdminCreateProductPage,
   postAdminCreateProductPage,
@@ -213,4 +276,9 @@ export {
   getCartPage,
   postDeleteProductFromCart,
   getCheckoutPage,
+  postHandleCartToCheckOut,
+  postPlaceOrder,
+  getThanksPage,
+  getOrderHistoryPage,
+  postAddToCartFromDetailPage,
 };
