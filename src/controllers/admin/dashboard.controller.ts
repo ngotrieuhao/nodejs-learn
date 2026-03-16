@@ -60,7 +60,6 @@ const getAdminOrderPage = async (req: Request, res: Response) => {
   const totalPages = await countTotalOrdersPage();
 
   const orders = await getOrderAdmin(currentPage);
-  console.log("🚀 ~ getAdminOrderPage ~ orders:", orders);
   return res.render("admin/order/show.ejs", {
     orders,
     totalPages,

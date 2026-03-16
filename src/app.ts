@@ -7,10 +7,17 @@ import { configPassportLocal } from "./middleware/passport.local";
 import session from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { prisma } from "config/client";
+import apiRoutes from "routes/api";
+import cors from "cors";
+
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+//config cors
+app.use(cors());
+
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 
@@ -53,6 +60,8 @@ app.use((req, res, next) => {
   next();
 });
 webRoutes(app);
+
+apiRoutes(app);
 
 // seeding data
 initDatabase();
